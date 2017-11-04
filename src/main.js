@@ -5,6 +5,8 @@ import VueCookie from 'vue-cookie';
 import App from './App';
 import router from './router';
 
+require('../node_modules/bootstrap/scss/bootstrap.scss');
+
 Vue.use(VueCookie);
 Vue.config.productionTip = false;
 

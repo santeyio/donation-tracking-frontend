@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import HelloWorld from '@/components/HelloWorld';
-import Section1 from '@/components/Section1';
+import UserInfo from '@/components/UserInfo';
+import VolunteerOpportunities from '@/components/VolunteerOpportunities';
 
 Vue.use(Router);
 
@@ -9,13 +9,13 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Hello',
-      component: HelloWorld,
+      name: 'UserInfo',
+      component: UserInfo,
     },
     {
-      path: '/section/1',
-      name: 'Section1',
-      component: Section1,
+      path: '/volunteer',
+      name: 'VolunteerOpportunities',
+      component: VolunteerOpportunities,
     },
   ],
 });

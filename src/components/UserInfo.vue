@@ -100,9 +100,10 @@ export default {
 
         .then((res) => {
           if (res.data.status > 1) {
-            self.display = false;
+            /* self.display = false;
             window.scroll(0, 0);
-            EventBus.$emit('section1-next', true);
+            EventBus.$emit('section1-next', true); */
+            this.$router.push('/volunteer');
           } else {
             this.overlay_toggle();
           }

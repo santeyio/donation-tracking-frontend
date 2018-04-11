@@ -142,8 +142,7 @@ export default {
   },
   methods: {
     back() {
-      // this.display = false;
-      // EventBus.$emit('section2-back', true);
+      this.$router.push('/');
     },
     submit() {
       var user_id = this.$cookie.get('user_id');
@@ -160,13 +159,14 @@ export default {
         })
         .then((res) => {
           if (res.data.status > 2) {
-            // self.display = false;
-            // window.scroll(0, 0);
-            // EventBus.$emit('section2-next', true);
+            this.$router.push('/donations');
           } else {
-            // overlay_on();
+            this.overlay_toggle();
           }
         });
+    },
+    overlay_toggle: function overlay_toggle() {
+      this.overlay = !this.overlay;
     },
   },
   beforeCreate() {

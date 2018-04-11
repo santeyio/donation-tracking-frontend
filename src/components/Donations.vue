@@ -122,25 +122,34 @@
     <div class="form-row">
       <p class="muted">NOTE: If you resubmit you will <b>not</b> create a new submission. It will update the info from your previous submission</p>
     </div>
-
+    <screen-overlay :toggleProp.sync="overlay"></screen-overlay>
   </div>
 </template>
 
 <script>
-var section3 = new Vue({
-  el: '#section3',
-  data: {
-    display: false,
-    currently_give: false,
-    one_time_donation: "",
-    monthly_donation: "",
-    renewal: false,
-    renewal_increase: "",
-    increase_donation: false,
-    discuss_decision: false,
+import axios from 'axios';
+import EventBus from '../bus';
+import ScreenOverlay from './ScreenOverlay';
+
+export default {
+  components: {
+    ScreenOverlay,
+  },
+  data() {
+    return {
+      display: true,
+      overlay: false,
+      currently_give: false,
+      one_time_donation: '',
+      monthly_donation: '',
+      renewal: false,
+      renewal_increase: '',
+      increase_donation: false,
+      discuss_decision: false,
+    };
   },
   computed: {
-    total_monthly: function(){
+    total_monthly: function total_monthly() {
       var md = parseInt(this.$data.monthly_donation);
       var ri = parseInt(this.$data.renewal_increase);
       if (isNaN(md)) md = 0;
@@ -149,64 +158,66 @@ var section3 = new Vue({
     },
   },
   methods: {
-    test: function(){
-      if (this.$data.increase_donation){
+    test: function test() {
+      if (this.$data.increase_donation) {
         this.$data.renewal_increase = 0;
         this.$data.increase_donation = false;
       }
     },
-    submit: function(){
-      var user_id = get_cookie('user_id');
+    submit: function submit() {
+      var user_id = this.$cookies.get('user_id');
       axios.put(`/api/v1/user/${user_id}/donations`, this.$data)
-        .then(function(res){
-          if (res.data.status == 'success'){
-            humane.log(
+        .then((res) => {
+          if (res.data.status === 'success') {
+            /* humane.log(
               'Thanks! Successfully Submitted.',
               {addnCls: 'humane-flatty-success'}
-            )
+            ) */
           }
         });
     },
-    next: function(){
+    next: function next() {
       var self = this;
       axios.get('/api/v1/flowstatus')
-        .then(function(res){
-          if (res.data.status > 3){
+        .then((res) => {
+          if (res.data.status > 3) {
             self.display = false;
             EventBus.$emit('section3-next', true);
           } else {
-            overlay_on();
+            this.overlay_toggle();
           }
-        })
+        });
     },
-    back: function(){
-      this.display = false;
-      EventBus.$emit('section3-back', true);
+    back: function back() {
+      this.$router.push('/volunteer');
     },
-    increase: function(percent){
-      this.$data.renewal_increase = Math.round(this.$data.monthly_donation*(.01*percent));
+    increase: function increase(percent) {
+      this.$data.renewal_increase = Math.round(this.$data.monthly_donation * (0.01 * percent));
+    },
+    overlay_toggle: function overlay_toggle() {
+      this.overlay = !this.overlay;
     },
   },
-  beforeCreate: function(){
+  beforeCreate: function bc() {
     var self = this;
-    var user_id = get_cookie('user_id');
+    var user_id = this.$cookies.get('user_id');
     axios.get(`/api/v1/user/${user_id}/donations`)
-      .then(function(res){
-        self.$data.one_time_donation = res.data.one_time_donation == 0 ? "" : res.data.one_time_donation;
-        self.$data.monthly_donation = res.data.monthly_donation == 0 ? "" : res.data.monthly_donation;
+      .then((res) => {
+        self.$data.one_time_donation = res.data.one_time_donation === 0 ? '' : res.data.one_time_donation;
+        self.$data.monthly_donation = res.data.monthly_donation === 0 ? '' : res.data.monthly_donation;
         self.$data.renewal = res.data.renewal;
         self.$data.renewal_increase = res.data.renewal_increase;
         self.$data.increase_donation = res.data.increase_donation;
       });
   },
-  created: function(){
+  /* created: function c() {
     var self = this;
-    EventBus.$on('section2-next', function(data){
+    EventBus.$on('section2-next', function(data) {
       self.display = true;
       window.scroll(0,0);
     });
-  },
-})
+  }, */
+};
 </script>
 
 <style scoped>
